@@ -14,11 +14,12 @@ print(temporary_image_name)
 image = cv2.imread(PATH_IMAGE + temporary_image_name)
 print(image.shape)
 image_dictionary = {int(temporary_image_name.split('.')[0]): image}
-image_table = pd.DataFrame(image_dictionary)
+image_table = pd.DataFrame(image_dictionary,columns=['ids','Arrays'])
 
 fashion_lookup = pd.read_csv(PATH_FILE)
 fashion_lookup = fashion_lookup[fashion_lookup['ProductId']== int(temporary_image_name.split('.')[0])]
-final_fashion_table = pd.merge()
+final_fashion_table = pd.merge(left = fashion_lookup,
+right = image_table, left_on = ['ProductId'], right_on=['ids'])
 
 
 
