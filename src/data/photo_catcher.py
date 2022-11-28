@@ -1,15 +1,18 @@
+"""
+Script to run the similarity
+"""
 import pandas as pd
 import numpy as np
 
 from sklearn.metrics import pairwise_distances
-from tensorflow.keras.preprocessing.image import (
+from keras.preprocessing.image import (
     ImageDataGenerator,
     load_img,
     img_to_array,
 )
-from tensorflow.keras.layers import Flatten, AveragePooling2D
-from tensorflow.keras import applications
-from tensorflow.keras.models import Model
+from keras.layers import Flatten, AveragePooling2D
+from keras import applications
+from keras.models import Model
 
 
 TYPE = "Apparel"
