@@ -1,5 +1,6 @@
 import pandas as pd
 
+from sklearn.metrics import pairwise_distances
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.layers import Flatten, AveragePooling2D
 from tensorflow.keras import applications
@@ -17,15 +18,18 @@ RESNET_MODEL = applications.ResNet50(
     weights="imagenet",
     input_shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3),
 )
+FILENAMES = []
+
+
 output = RESNET_MODEL.output
 output = AveragePooling2D(pool_size=(7, 7))(RESNET_MODEL.output)
 output = Flatten()(output)
 model = Model(inputs=RESNET_MODEL.input, outputs=output)
 
-FILENAMES = []
 
 fashion_lookup = pd.read_csv(PATH_FILE)
 sample_size = len(fashion_lookup[fashion_lookup["Gender"] == GENDER])
+
 
 # Trying out the feature extraction
 datagen = ImageDataGenerator(
@@ -43,9 +47,24 @@ generator = datagen.flow_from_directory(
     shuffle=False,
 )
 
+
 for filename in generator.filenames:
     FILENAMES.append(filename.split("/")[-1])
+
 
 image_features = model.predict_generator(
     generator, sample_size // BATCH_SIZE
 )
+
+pairwise_dist = pairwise_distances(image_features, image_features)
+distance_dataframe = pd.DataFrame(
+    pairwise_dist, columns=FILENAMES, index=FILENAMES
+)
+
+
+# for any image get the
+src_to_test_image = f"../../data/raw/{TYPE}/{GENDER}/Images/"
+datagen_test = ImageDataGenerator(
+    rescale=1 / 255
+)
+
