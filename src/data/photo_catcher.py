@@ -16,8 +16,8 @@ from tensorflow.keras import applications
 from tensorflow.keras.models import Model
 
 
-TYPE = ["Footwear","Apparel"]
-GENDER = ["Boys","Girls","Men","Women"]
+TYPE = ["Footwear", "Apparel"]
+GENDER = ["Boys", "Girls", "Men", "Women"]
 PATH_FILE = r"../../data/raw/fashion.csv"
 IMAGE_WIDTH, IMAGE_HEIGHT = 224, 224
 EPOCHS = 50
@@ -27,7 +27,7 @@ RESNET_MODEL = applications.ResNet50(
     weights="imagenet",
     input_shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3),
 )
-FILENAMES,IMAGE_FEATURES = [],[]
+FILENAMES, IMAGE_FEATURES = [], []
 
 output = RESNET_MODEL.output
 output = AveragePooling2D(pool_size=(3, 3))(RESNET_MODEL.output)
@@ -45,10 +45,12 @@ datagen = ImageDataGenerator(
     # rescale= 1/255
 )
 
-for types,gender in product(TYPE,GENDER):
-    print(types,gender)
+for types, gender in product(TYPE, GENDER):
+    print(types, gender)
     PATH_IMAGE = f"../../data/raw/{types}/{gender}/Images/"
-    sample_size = len(fashion_lookup[fashion_lookup["Gender"] == gender])
+    sample_size = len(
+        fashion_lookup[fashion_lookup["Gender"] == gender]
+    )
     try:
         generator = datagen.flow_from_directory(
             PATH_IMAGE,
@@ -60,15 +62,15 @@ for types,gender in product(TYPE,GENDER):
         for filename in generator.filenames:
             FILENAMES.append(PATH_IMAGE + filename)
 
-
-        IMAGE_FEATURES.append(model.predict_generator(
-            generator, sample_size // BATCH_SIZE
-        ))
-    except Exception as e:
-        print(e)
+        IMAGE_FEATURES.append(
+            model.predict_generator(
+                generator, sample_size // BATCH_SIZE
+            )
+        )
+    except FileNotFoundError as e:
         continue
 
-image_features_array = np.concatenate((IMAGE_FEATURES),axis= 0)
+image_features_array = np.concatenate((IMAGE_FEATURES), axis=0)
 
 # for any image get the
 FILENAMES = FILENAMES[:-1]
