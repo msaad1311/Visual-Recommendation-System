@@ -73,9 +73,9 @@ for types, gender in product(TYPE, GENDER):
 image_features_array = np.concatenate((IMAGE_FEATURES), axis=0)
 
 # for any image get the
-FILENAMES = FILENAMES[:-1]
-FILENAMES.append("2691.jpg")
-src_to_test_image = f"../../data/raw/Apparel/Boys/Images/2691.jpg"
+# FILENAMES = FILENAMES[:-1]
+FILENAMES.append("shorts.png")
+src_to_test_image = f"../../data/raw/Apparel/Boys/Images/shorts.png"
 
 # load the image
 test_image = load_img(
@@ -100,7 +100,7 @@ distance_dataframe = pd.DataFrame(
     pairwise_dist, columns=FILENAMES, index=FILENAMES
 )
 
-closest_imgs_scores = distance_dataframe["2691.jpg"].sort_values(
+closest_imgs_scores = distance_dataframe["shorts.png"].sort_values(
     ascending=True
 )[1 : 5 + 1]
 print(closest_imgs_scores)
